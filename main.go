@@ -3,9 +3,9 @@ package main
 import (
 	"os"
 	"log"
-	"io"
+	"bufio"
 	"strings"
-	"github.com/uia-worker/misc/conv"
+	"github.com/xBroccoliMaster69x/funtemps/conv"
 )	
 
 func main() {
@@ -18,35 +18,25 @@ func main() {
         log.Println(src)
         
 	
-	var buffer []byte
-	var linebuf []byte // nil
-	buffer = make([]byte, 1)
-        bytesCount := 0
-	for {
-		_, err := src.Read(buffer)
-		if err != nil && err != io.EOF {
-			log.Fatal(err)
+	scanner := bufio.NewScanner(src)
+	linebuf := ""
+	for scanner.Scan() {
+		linebuf += scanner.Text()
+		if scanner.Err() != nil {
+			log.Fatal(scanner.Err())
 		}
-
-		bytesCount++
-		//log.Printf("%c ", buffer[:n])
-		if buffer[0] == 0x0A {
-	           log.Println(string(linebuf))
-		   // Her
-		   elementArray := strings.Split(string(linebuf), ";")
-		   if len(elementArray) > 3 {
-			 celsius := elementArray[3]
-			 fahr := conv.CelsiusToFahrenheit(celsius)
-		         log.Println(elementArray[3])
-	   	   }
-                   linebuf = nil		   
-		} else {
-                   linebuf = append(linebuf, buffer[0])
-		}	
-		//log.Println(string(linebuf))
-		if err == io.EOF {
-			break
+		if linebuf[len(linebuf)-1] == '\n' {
+			log.Println(linebuf)
+			elementArray := strings.Split(linebuf,";")
+			if len(elementArray) > 3 {
+				celsius := elementArray[3]
+				fahr := conv.CelsiusToFahrenheit(celsius)
+				log.Println(elementArray[3])
+			}
+			linebuf = ""
 		}
 	}
-
+	if err := scanner.Err(); err != nil {
+		log.Fatal(err)
+	}
 }
