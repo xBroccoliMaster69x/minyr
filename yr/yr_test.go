@@ -1,60 +1,64 @@
 package main
 
 import (
-	"bufio"
-	"os"
-	"strings"
+	"log"
 	"testing"
+	"path/filepath"
+
 )
 
-func TestConvertToFahrenheit(t *testing.T) {
+func TestConvert(t *testing.T) {
 	tests := []struct {
-		input       string
-		want        string
-		lineCounter int
+		input float64
+		want  float64
 	}{
-		{input: "6", want: "42.8", lineCounter: 27},
-		{input: "0", want: "32.0", lineCounter: 27},
-		{input: "-11", want: "12.2", lineCounter: 27},
+		{input: 6, want: 42.8},
+		{input: 0, want: 32.0},
+		{input: -11, want: 12.2},
 	}
 
 	for _, tc := range tests {
-		t.Run(tc.input, func(t *testing.T) {
-			got := ConvertToFahrenheit(tc.input)
-			if got != tc.want {
-				t.Errorf("ConvertToFahrenheit(%s) = %s, want %s", tc.input, got, tc.want)
-			}
+		got := convert(tc.input)
+		if got != tc.want {
+			t.Errorf("convert(%.2f) = %.2f, want %.2f", tc.input, got, tc.want)
+		}
+	}
+}
 
-			if lineCounter != tc.lineCounter {
-				t.Errorf("lineCounter = %d, want %d", lineCounter, tc.lineCounter)
-			}
+func TestCountLines(t *testing.T) {
+	outputFilePath := filepath.Join("..", "output.txt")
+	want := 27
 
-			// Open the output.txt file for reading
-			file, err := os.Open("output.txt")
-			if err != nil {
-				t.Fatalf("Failed to open output.txt: %v", err)
-			}
-			defer file.Close()
-
-			// Read the file line by line
-			scanner := bufio.NewScanner(file)
-			for scanner.Scan() {
-				line := scanner.Text()
-				if strings.Contains(line, "Data er basert paa gyldig data (per 18.03.2023) (CC BY 4.0) fra Meteorologisk institutt (MET);endringen er gjort av Alexander Glasdam Andersen") {
-					// Found the expected string in the final line
-					return
-				}
-			}
-
-			// If the expected string was not found, fail the test
-			t.Errorf("Expected string not found in the final line of output.txt")
-		})
+	amountLines, err := countLines(outputFilePath)
+	if err != nil {
+		log.Fatal(err)
 	}
 
-	// Check the average value
-	avg := Average()
-	expectedAvg := 8.56
-	if avg != expectedAvg {
-		t.Errorf("Average() = %f, want %f", avg, expectedAvg)
+	if amountLines != want {
+		t.Errorf("countLines(%s) = %d, want %d", outputFilePath, amountLines, want)
+	}
+}
+
+func TestGetLastLine(t *testing.T) {
+	outputFilePath := "output.txt"
+	want := "Data er basert paa gyldig data (per 18.03.2023) (CC BY 4.0) fra Meteorologisk institutt (MET);endringen er gjort av NAVN_PÅ_STUDENTEN"
+
+	lastLine, err := getLastLine(outputFilePath)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	if lastLine != want {
+		t.Errorf("getLastLine(%s) = %s, want %s", outputFilePath, lastLine, want)
+	}
+}
+
+func TestAverage(t *testing.T) {
+	celsiusValues := []float64{6, 0, -11}
+	want := 8.56
+
+	average := average(celsiusValues)
+	if average != want {
+		t.Errorf("average(%v) = %.2f, want %.2f", celsiusValues, average, want)
 	}
 }

@@ -5,6 +5,7 @@ import (
 	"io/ioutil"
 	"log"
 	"strings"
+	"path/filepath"
 
 	"github.com/xBroccoliMaster69x/funtemps/conv"
 )
@@ -18,7 +19,7 @@ func main() {
 	}
 
 	// Specify the relative file path of output.txt from yr.go
-	outputFilePath := "output.txt"
+	outputFilePath := filepath.Join("..","output.txt")
 
 	amountLines, err := countLines(outputFilePath)
 	if err != nil {
