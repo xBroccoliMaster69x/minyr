@@ -1,42 +1,69 @@
-package yr
+package main
 
 import (
 	"fmt"
-	"strconv"
-	//"strings"
-	//"errors"
-	"github.com/xBroccoliMaster69x/misc/conv"
+	"io/ioutil"
+	"log"
+	"strings"
+
+	"github.com/xBroccoliMaster69x/funtemps/conv"
 )
 
-func CelsiusToFahrenheitString(celsius string) (string, error) {
-	var fahrFloat float64
-	var err error
-	if celsiusFloat, err := strconv.ParseFloat(celsius, 64); err == nil {
-		fahrFloat = conv.CelsiusToFahrenheit(celsiusFloat)
+func main() {
+	celsiusValues := []float64{6, 0, -11}
+
+	for _, celsius := range celsiusValues {
+		fahrenheit := convert(celsius)
+		fmt.Printf("%.2f°C is %.2f°F\n", celsius, fahrenheit)
 	}
-	fahrString := fmt.Sprintf("%.1f", fahrFloat)
-	return fahrString, err
+
+	// Specify the relative file path of output.txt from yr.go
+	outputFilePath := "output.txt"
+
+	amountLines, err := countLines(outputFilePath)
+	if err != nil {
+		log.Fatal(err)
+	}
+	fmt.Printf("Number of lines in %s: %d\n", outputFilePath, amountLines)
+
+	lastLine, err := getLastLine(outputFilePath)
+	if err != nil {
+		log.Fatal(err)
+	}
+	fmt.Printf("Last line in %s: %s\n", outputFilePath, lastLine)
+
+	average := average(celsiusValues)
+	fmt.Printf("Average of Celsius values: %.2f°C\n", average)
 }
 
-// Forutsetter at vi kjenner strukturen i filen og denne implementasjon 
-// er kun for filer som inneholder linjer hvor det fjerde element
-// på linjen er verdien for temperaturaaling i grader celsius
-func CelsiusToFahrenheitLine(line string) (string, error) {
-
-        dividedString := strings.Split(line, ";")
-	var err error
-	
-	if (len(dividedString) == 4) {
-		dividedString[3], err = CelsiusToFahrenheitString(dividedString[3])
-		if err != nil {
-			return "", err
-		}
-	} else {
-		return "", errors.New("linje har ikke forventet format")
-	}
-	return strings.Join(dividedString, ";"), nil
-	*/
-	
-	return "Kjevik;SN39040;18.03.2022 01:50;42.8", err
+func convert(celsius float64) float64 {
+	return conv.CelsiusToFahrenheit(celsius)
 }
 
+func countLines(filename string) (int, error) {
+	content, err := ioutil.ReadFile(filename)
+	if err != nil {
+		return 0, err
+	}
+	return len(strings.Split(string(content), "\n")), nil
+}
+
+func getLastLine(filename string) (string, error) {
+	content, err := ioutil.ReadFile(filename)
+	if err != nil {
+		return "", err
+	}
+	lines := strings.Split(string(content), "\n")
+	if len(lines) > 0 {
+		return lines[len(lines)-1], nil
+	}
+	return "", fmt.Errorf("file %s is empty", filename)
+}
+
+func average(values []float64) float64 {
+	sum := 0.0
+	for _, v := range values {
+		sum += v
+	}
+	return sum / float64(len(values))
+}
