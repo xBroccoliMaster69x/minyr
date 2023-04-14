@@ -4,7 +4,7 @@ import (
 	"log"
 	"testing"
 	"path/filepath"
-
+	"os"
 )
 
 func TestConvert(t *testing.T) {
@@ -26,9 +26,12 @@ func TestConvert(t *testing.T) {
 }
 
 func TestCountLines(t *testing.T) {
-	outputFilePath := filepath.Join(wd, "../output.txt")
-	//outputFilePath := "../output.txt"
-	//outputFilePath := filepath.Join("..", "output.txt")
+	wd, err := os.Getwd()
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	outputFilePath := filepath.Join(wd, "../output.txt") // Use os.Getwd() to get the current working directory and construct the relative file path
 	want := 27
 
 	amountLines, err := countLines(outputFilePath)
@@ -42,8 +45,13 @@ func TestCountLines(t *testing.T) {
 }
 
 func TestGetLastLine(t *testing.T) {
-	outputFilePath := "output.txt"
-	want := "Data er basert paa gyldig data (per 18.03.2023) (CC BY 4.0) fra Meteorologisk institutt (MET);endringen er gjort av NAVN_PÅ_STUDENTEN"
+	wd, err := os.Getwd()
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	outputFilePath := filepath.Join(wd, "../output.txt") // Use os.Getwd() to get the current working directory and construct the relative file path
+	want := "Data er basert paa gyldig data (per 18.03.2023) (CC BY 4.0) fra Meteorologisk institutt (MET);endringen er gjort av Alexander Glasdam Andersen"
 
 	lastLine, err := getLastLine(outputFilePath)
 	if err != nil {
