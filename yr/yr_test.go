@@ -5,6 +5,9 @@ import (
 	"testing"
 	"path/filepath"
 	"os"
+	"bufio"
+	"strings"
+	"strconv"
 )
 
 func TestConvert(t *testing.T) {
@@ -62,13 +65,51 @@ func TestGetLastLine(t *testing.T) {
 		t.Errorf("getLastLine(%s) = %s, want %s", outputFilePath, lastLine, want)
 	}
 }
+func average(unit string) {
+        src, err := os.Open("table.csv")
+        if err != nil {
+                log.Fatal(err)
+        }
+        defer src.Close()
 
-func TestAverage(t *testing.T) {
-	celsiusValues := []float64{6, 0, -11}
-	want := 8.56
+        scanner := bufio.NewScanner(src)
 
-	average := average(celsiusValues)
-	if average != want {
-		t.Errorf("average(%v) = %.2f, want %.2f", celsiusValues, average, want)
-	}
+        lineCounter := 0
+        tempSum := 0.0
+        for scanner.Scan() {
+                linebuf := scanner.Text()
+                if scanner.Err() != nil {
+                        log.Fatal(scanner.Err())
+                }
+                if lineCounter == 0 {
+                        lineCounter ++
+                        continue
+                }
+                //if linebuf[len(linebuf)-1] != ';' {
+			elementArray := strings.Split(linebuf, ";")
+                        if len(elementArray) > 3 {
+                                celsius := elementArray[3]
+                                if celsius == "" {
+                                        continue
+                                }
+                                celsiusFloat, err := strconv.ParseFloat(celsius, 64)
+                                if err != nil {
+                                        log.Fatal(err)
+                                }
+                                tempSum += celsiusFloat
+                                lineCounter++
+
+                        }
+
+                
+        }
+        if err := scanner.Err(); err != nil {
+                log.Fatal(err)
+        }
+
+        avg := tempSum / float64(lineCounter)
+
+        if unit == "celsius" {
+                log.Printf("Average temperature in Celsius: %.2f", avg)
+        }
 }
