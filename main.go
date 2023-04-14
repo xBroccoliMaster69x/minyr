@@ -161,7 +161,7 @@ func average(unit string) {
                 log.Fatal(err)
         }
 
-        avg := tempSum / float64(lineCounter)
+        avg := tempSum / float64(lineCounter-1)
 
         if unit == "celsius" {
                 log.Printf("Average temperature in Celsius: %.2f", avg)

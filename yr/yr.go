@@ -61,10 +61,10 @@ func getLastLine(filename string) (string, error) {
 	return "", fmt.Errorf("file %s is empty", filename)
 }
 
-func average(values []float64) float64 {
-	sum := 0.0
-	for _, v := range values {
-		sum += v
-	}
-	return sum / float64(len(values))
-}
+//func average(values []float64) float64 {
+//	sum := 0.0
+//	for _, v := range values {
+//		sum += v
+//	}
+//	return sum / float64(len(values))
+//}
