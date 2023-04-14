@@ -26,7 +26,9 @@ func TestConvert(t *testing.T) {
 }
 
 func TestCountLines(t *testing.T) {
-	outputFilePath := filepath.Join("..", "output.txt")
+	outputFilePath := filepath.Join(wd, "../output.txt")
+	//outputFilePath := "../output.txt"
+	//outputFilePath := filepath.Join("..", "output.txt")
 	want := 27
 
 	amountLines, err := countLines(outputFilePath)
