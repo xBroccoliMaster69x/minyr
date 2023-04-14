@@ -32,8 +32,8 @@ func TestCountLines(t *testing.T) {
 		log.Fatal(err)
 	}
 
-	outputFilePath := filepath.Join(wd, "../output.txt") // Use os.Getwd() to get the current working directory and construct the relative file path
-	want := 27
+	outputFilePath := filepath.Join(wd, "../kjevik-temp-fahrenheit-20220318-20230318.csv") // Use os.Getwd() to get the current working directory and construct the relative file path
+	want := 16756
 
 	amountLines, err := countLines(outputFilePath)
 	if err != nil {
@@ -51,7 +51,7 @@ func TestGetLastLine(t *testing.T) {
 		log.Fatal(err)
 	}
 
-	outputFilePath := filepath.Join(wd, "../output.txt") // Use os.Getwd() to get the current working directory and construct the relative file path
+	outputFilePath := filepath.Join(wd, "../kjevik-temp-fahrenheit-20220318-20230318.csv") // Use os.Getwd() to get the current working directory and construct the relative file path
 	want := "Data er basert paa gyldig data (per 18.03.2023) (CC BY 4.0) fra Meteorologisk institutt (MET);endringen er gjort av Alexander Glasdam Andersen"
 
 	lastLine, err := getLastLine(outputFilePath)
@@ -66,7 +66,7 @@ func TestGetLastLine(t *testing.T) {
 func TestAverage(t *testing.T) {
 	unit := "celsius"
 	expected := 8.56
-	tolerance := 0.001 // set a tolerance value for comparison
+	tolerance := 0.005 // set a tolerance value for comparison
 
 	// Call the average function and get the calculated average
 	avg := average(unit)

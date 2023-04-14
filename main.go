@@ -29,20 +29,20 @@ func main() {
 	
 	if mode == "1" || mode == "convert" {
 		fmt.Println("du har valgt 'Convert'")
-		if fileExists("output.txt") {
+		if fileExists("kjevik-temp-fahrenheit-20220318-20230318.csv") {
 			fmt.Print("Output fil eksisterer allerede. Regenerer? (j/n): ")
 			regenerateInput, _ := reader.ReadString('\n')
 			regenerate := regenerateInput[:len(regenerateInput)-1]
 
 			if regenerate == "j" || regenerate == "J" {
-				fmt.Println("Regenererer 'output.txt' fil...")
+				fmt.Println("Regenererer 'kjevik-temp-fahrenheit-20220318-20230318.csv' fil...")
 				convert()
 			} else {
-				fmt.Print("genererer ikke output.txt")
+				fmt.Print("genererer ikke kjevik-temp-fahrenheit-20220318-20230318.csv")
 			}
 
 		} else {
-			fmt.Println("utdata fil eksisterer ikke genererer output.txt")
+			fmt.Println("utdata fil eksisterer ikke genererer kjevik-temp-fahrenheit-20220318-20230318.csv")
 			convert()
 		}
 	
@@ -66,13 +66,13 @@ func fileExists(filename string) bool {
 
 func convert() {
 
-	src, err := os.Open("table.csv")
+	src, err := os.Open("kjevik-temp-celsius-20220318-20230318.csv")
 	if err != nil {
 		log.Fatal(err)
 	}
 	defer src.Close()
 
-	dst, err := os.Create("output.txt")
+	dst, err := os.Create("kjevik-temp-fahrenheit-20220318-20230318.csv")
 	defer dst.Close()
 	defer dst.WriteString("Data er basert paa gyldig data (per 18.03.2023) (CC BY 4.0) fra Meteorologisk institutt (MET);endringen er gjort av Alexander Glasdam Andersen")
 
@@ -120,7 +120,7 @@ func convert() {
 	}
 }
 func average(unit string) {
-        src, err := os.Open("table.csv")
+        src, err := os.Open("kjevik-temp-celsius-20220318-20230318.csv")
         if err != nil {
                 log.Fatal(err)
         }

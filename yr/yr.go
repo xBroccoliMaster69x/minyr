@@ -21,9 +21,9 @@ func main() {
 		fmt.Printf("%.2f°C is %.2f°F\n", celsius, fahrenheit)
 	}
 
-	// Specify the relative file path of output.txt from yr.go
-	//inputFilePath := filepath.Join("..","table.csv")
-	outputFilePath := filepath.Join("..","output.txt")
+	// Specify the relative file path of kjevik-temp-fahrenheit-20220318-20230318.csv from yr.go
+	//inputFilePath := filepath.Join("..","kjevik-temp-celsius-20220318-20230318.csv")
+	outputFilePath := filepath.Join("..","kjevik-temp-fahrenheit-20220318-20230318.csv")
 
 	amountLines, err := countLines(outputFilePath)
 	if err != nil {
@@ -63,7 +63,7 @@ func getLastLine(filename string) (string, error) {
 }
 
 func average(unit string) float64 {
-	inputFilePath := filepath.Join("..","table.csv")
+	inputFilePath := filepath.Join("..","kjevik-temp-celsius-20220318-20230318.csv")
         src, err := os.Open(inputFilePath)
         if err != nil {
                 log.Fatal(err)
