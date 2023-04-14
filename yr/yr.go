@@ -6,6 +6,9 @@ import (
 	"log"
 	"strings"
 	"path/filepath"
+	"os"
+	"bufio"
+	"strconv"
 
 	"github.com/xBroccoliMaster69x/funtemps/conv"
 )
@@ -19,6 +22,7 @@ func main() {
 	}
 
 	// Specify the relative file path of output.txt from yr.go
+	//inputFilePath := filepath.Join("..","table.csv")
 	outputFilePath := filepath.Join("..","output.txt")
 
 	amountLines, err := countLines(outputFilePath)
@@ -32,9 +36,6 @@ func main() {
 		log.Fatal(err)
 	}
 	fmt.Printf("Last line in %s: %s\n", outputFilePath, lastLine)
-
-	average := average(celsiusValues)
-	fmt.Printf("Average of Celsius values: %.2f°C\n", average)
 }
 
 func convert(celsius float64) float64 {
@@ -61,10 +62,53 @@ func getLastLine(filename string) (string, error) {
 	return "", fmt.Errorf("file %s is empty", filename)
 }
 
-//func average(values []float64) float64 {
-//	sum := 0.0
-//	for _, v := range values {
-//		sum += v
-//	}
-//	return sum / float64(len(values))
-//}
+func average(unit string) float64 {
+	inputFilePath := filepath.Join("..","table.csv")
+        src, err := os.Open(inputFilePath)
+        if err != nil {
+                log.Fatal(err)
+        }
+        defer src.Close()
+
+        scanner := bufio.NewScanner(src)
+
+        lineCounter := 0
+        tempSum := 0.0
+        for scanner.Scan() {
+                linebuf := scanner.Text()
+                if scanner.Err() != nil {
+                        log.Fatal(scanner.Err())
+                }
+                if lineCounter == 0 {
+                        lineCounter ++
+                        continue
+                }
+                //if linebuf[len(linebuf)-1] != ';' {
+			elementArray := strings.Split(linebuf, ";")
+                        if len(elementArray) > 3 {
+                                celsius := elementArray[3]
+                                if celsius == "" {
+                                        continue
+                                }
+                                celsiusFloat, err := strconv.ParseFloat(celsius, 64)
+                                if err != nil {
+                                        log.Fatal(err)
+                                }
+                                tempSum += celsiusFloat
+                                lineCounter++
+
+                        }
+
+                
+        }
+        if err := scanner.Err(); err != nil {
+                log.Fatal(err)
+        }
+
+        avg := tempSum / float64(lineCounter-1)
+
+        if unit == "celsius" {
+                log.Printf("Average temperature in Celsius: %.2f", avg)
+        }
+	return avg
+}
